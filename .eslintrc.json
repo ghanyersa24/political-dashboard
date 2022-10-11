@@ -13,6 +13,6 @@
   "plugins": ["vue"],
   "rules": {
     "camelcase": "error",
-    "import/no-unresolved": "never"
+    "import/no-unresolved": "off"
   }
 }
