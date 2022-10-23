@@ -1,22 +1,37 @@
 <template>
-  <div class="row mt-3">
-    <div class="col-md-3 label">
-      <label class="text-capitalize" :for="idName">{{ name }}</label>
-    </div>
-    <div class="col-md-9">
-      <div class="checkbox">
-        <input
-          :disabled="disabled"
-          type="checkbox"
-          :id="idName"
-          v-model="value"
-        />
-        <label :for="idName">
-          <span class="text-capitalize"
-            >{{ value ? null : 'No ' }}{{ label }}</span
-          ></label
-        >
+  <div>
+    <div v-if="!checkOnly" class="row mt-3">
+      <div class="col-md-3 label">
+        <label class="text-capitalize" :for="idName">{{ name }}</label>
       </div>
+      <div class="col-md-9">
+        <div class="checkbox">
+          <input
+            :disabled="disabled"
+            type="checkbox"
+            :id="idName"
+            v-model="value"
+          />
+          <label :for="idName">
+            <span class="text-capitalize"
+              >{{ value ? null : 'No ' }}{{ label }}</span
+            ></label
+          >
+        </div>
+      </div>
+    </div>
+    <div v-else class="checkbox">
+      <input
+        :disabled="disabled"
+        type="checkbox"
+        :id="idName"
+        v-model="value"
+      />
+      <label :for="idName">
+        <span class="text-capitalize">
+          {{ value ? null : '' }}{{ label }}
+        </span>
+      </label>
     </div>
   </div>
 </template>
@@ -40,6 +55,10 @@ export default {
     label: {
       type: String,
       default: '',
+    },
+    checkOnly: {
+      type: Boolean,
+      default: false,
     },
   },
   computed: {

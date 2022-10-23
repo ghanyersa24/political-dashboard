@@ -4,7 +4,7 @@
       <template v-slot:header>
         <h4>Data Request</h4>
         <div class="card-header-action">
-          <atoms-button to="/data-request">
+          <atoms-button to="/data-request/add">
             Add <i class="fas fa-plus"></i>
           </atoms-button>
           <atoms-button secondary>
@@ -17,34 +17,18 @@
           <tbody>
             <tr>
               <th>Name</th>
-              <th>Tags</th>
+              <th>Keyword</th>
               <th>Date Range</th>
               <th>Status</th>
               <th>Action</th>
             </tr>
-            <tr>
-              <td><a href="#">INV-87239</a></td>
-              <td class="font-weight-600">Presiden RI</td>
-              <td>10 July 2022 - 30 Oktober 2022</td>
-              <td><div class="badge badge-warning">In Progress</div></td>
-              <td>
-                <a href="#" class="btn btn-primary">Detail</a>
+            <tr v-for="(item, i) in queue" :key="i">
+              <td class="text-capitalize">
+                {{ item.name }}
               </td>
-            </tr>
-            <tr>
-              <td><a href="#">INV-87240</a></td>
-              <td class="font-weight-600">DPR RI</td>
-              <td>10 July 2022 - 30 Oktober 2022</td>
-              <td><div class="badge badge-success">Done</div></td>
-              <td>
-                <a href="#" class="btn btn-primary">Detail</a>
-              </td>
-            </tr>
-            <tr>
-              <td><a href="#">INV-87239</a></td>
-              <td class="font-weight-600">POLISIRI</td>
-              <td>10 July 2022 - 30 Oktober 2022</td>
-              <td><div class="badge badge-danger">Failed</div></td>
+              <td class="font-weight-600">{{ keyword(item.keyword) }}</td>
+              <td>{{ dateRange(item.since, item.until) }}</td>
+              <td><div class="badge badge-warning text-capitalize">{{item.status}}</div></td>
               <td>
                 <a href="#" class="btn btn-primary">Detail</a>
               </td>
@@ -56,7 +40,34 @@
   </div>
 </template>
 <script>
+import requestVue from '~/mixins/request.vue';
+
 export default {
   name: 'home-page',
+  mixins: [requestVue],
+  data() {
+    return {
+      queue: [],
+    };
+  },
+  async created() {
+    this.getQueue();
+  },
+  methods: {
+    async getQueue() {
+      this.queue = await this.requestGet({
+        url: 'twitter/get-queue',
+        name: 'queue twitter',
+      });
+    },
+    keyword(keywords) {
+      return keywords.split('|').join(', ');
+    },
+    dateRange(start, end) {
+      return `${this.$moment(start).format('DD MMMM YYYY')} - ${this.$moment(
+        end,
+      ).format('DD MMMM YYYY')}`;
+    },
+  },
 };
 </script>

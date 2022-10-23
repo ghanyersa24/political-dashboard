@@ -7,7 +7,7 @@
           <!-- <i class="fas fa-bars"></i> -->
           <h4 class="d-inline ml-4">Data Analytic Apps</h4>
         </a>
-        <ul v-if="isShowMenuNavbar" class="navbar-nav">
+        <ul v-if="false" class="navbar-nav">
           <li class="nav-item">
             <nuxt-link class="nav-link" :to="`/${$route.params.classId}/kelas`"
               >Kelas</nuxt-link
@@ -33,12 +33,20 @@
               data-toggle="dropdown"
               class="nav-link dropdown-toggle nav-link-lg nav-link-user"
             >
-              <div class="d-sm-none d-lg-inline-block">Hi, GHANY</div>
+              <div class="d-sm-none d-lg-inline-block text-capitalize">
+                Hi, {{ $auth.user.name }}
+              </div>
             </a>
             <div class="dropdown-menu dropdown-menu-right">
-              <div class="dropdown-title">Logged in 5 min ago</div>
-              <nuxt-link to="/" class="dropdown-item has-icon">
+              <div class="dropdown-title">Menu user</div>
+              <!-- <nuxt-link to="/" class="dropdown-item has-icon">
                 <i class="far fa-user"></i> Profile
+              </nuxt-link> -->
+              <nuxt-link to="/" class="dropdown-item has-icon">
+                <i class="fas fa-home"></i> Home
+              </nuxt-link>
+              <nuxt-link to="/users" class="dropdown-item has-icon">
+                <i class="fas fa-users"></i> Users
               </nuxt-link>
               <div class="dropdown-divider"></div>
               <a
@@ -58,14 +66,10 @@
 <script>
 export default {
   name: 'navbar-component',
-  computed: {
-    isShowMenuNavbar() {
-      return this.$route.params.classId;
-    },
-  },
   methods: {
     logout() {
       this.$auth.logout();
+      this.$router.push('/login');
     },
   },
 };

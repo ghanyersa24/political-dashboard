@@ -1,5 +1,6 @@
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
+  ssr: false,
   head: {
     title: 'Political Dashboard',
     meta: [
@@ -35,7 +36,9 @@ export default {
   // Global CSS: https://go.nuxtjs.dev/config-css
   css: ['@/assets/css/style.css', '@/assets/css/components.css', '@/assets/css/custom.css', '@/assets/css/spinkit.css'],
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-  plugins: [],
+  plugins: [
+    { src: '~/plugins/vue-tags-input', ssr: false },
+  ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
@@ -53,18 +56,31 @@ export default {
   modules: [
     // https://go.nuxtjs.dev/bootstrap
     'bootstrap-vue/nuxt',
-    // https://go.nuxtjs.dev/axios
-    '@nuxtjs/axios',
     // https://go.nuxtjs.dev/pwa
     '@nuxtjs/pwa',
     '@nuxtjs/auth-next',
+    // https://go.nuxtjs.dev/axios
+    '@nuxtjs/axios',
     '@nuxtjs/moment',
+    '@nuxtjs/toast',
   ],
-
+  toast: {
+    position: 'bottom-center',
+    duration: 1500,
+    action: {
+      text: 'close',
+      onClick: (e, toastObject) => {
+        toastObject.goAway(0);
+      },
+    },
+  },
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
     // Workaround to avoid enforcing hard-coded localhost:3000: https://github.com/nuxt-community/axios-module/issues/308
-    baseURL: '/',
+    baseURL: 'https://service.shiftacademy.id/api',
+  },
+  router: {
+    middleware: ['auth'],
   },
 
   // PWA module configuration: https://go.nuxtjs.dev/pwa
@@ -80,11 +96,10 @@ export default {
     strategies: {
       local: {
         token: {
-          propertyName: 'token',
-          type: '',
+          property: 'data.token',
         },
         user: {
-          property: false,
+          property: 'data',
         },
         endpoints: {
           login: {
@@ -92,10 +107,15 @@ export default {
             method: 'POST',
           },
           user: {
-            url: '/users/me',
-            method: 'GET',
+            url: '/users',
           },
           logout: false,
+        },
+        redirect: {
+          login: '/login',
+          logout: '/login',
+          callback: '/login',
+          home: '/',
         },
       },
     },
