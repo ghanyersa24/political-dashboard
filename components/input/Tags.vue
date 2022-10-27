@@ -6,6 +6,7 @@
     <div class="col-md-9">
       <client-only>
         <vue-tags-input
+          :readonly="disabled"
           class="form-control"
           v-model="tag"
           :tags="data"
@@ -57,7 +58,7 @@ export default {
         return this.value;
       },
       set(val) {
-        this.$emit('tags', val);
+        this.$emit('input', val);
       },
     },
     filteredItems() {
@@ -69,7 +70,7 @@ export default {
   },
   watch: {
     tag(val) {
-      this.$emit('input', val);
+      this.$emit('keyword', val);
     },
   },
 };

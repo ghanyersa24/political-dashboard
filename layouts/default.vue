@@ -10,11 +10,7 @@
             <h1>:: Political Dashboard ::</h1>
           </div>
           <div class="section-body">
-            <div class="card card-primary rounded">
-              <div class="card-body">
-                <Nuxt />
-              </div>
-            </div>
+            <nuxt />
           </div>
         </section>
       </div>

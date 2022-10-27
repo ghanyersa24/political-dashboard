@@ -1,6 +1,6 @@
 <!-- eslint-disable vue/no-deprecated-v-on-native-modifier -->
 <template>
-  <div>
+  <AtomsCardLayout>
     <h5>
       <i class="fas fa-arrow-left mr-3 pointer" @click="$router.go(-1)"></i>
       Form Users
@@ -23,7 +23,7 @@
         </div>
       </form>
     </div>
-  </div>
+  </AtomsCardLayout>
 </template>
 <script>
 import requestVue from '~/mixins/request.vue';

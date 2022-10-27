@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <AtomsCardLayout>
     <atoms-card>
       <template v-slot:header>
         <h4>List of User</h4>
@@ -24,7 +24,7 @@
         </table>
       </div>
     </atoms-card>
-  </div>
+  </AtomsCardLayout>
 </template>
 <script>
 import requestVue from '~/mixins/request.vue';
@@ -43,8 +43,8 @@ export default {
   methods: {
     async getUsers() {
       this.users = await this.requestGet({
-        url: 'twitter/get-queue',
-        name: 'queue twitter',
+        url: 'users/user-list',
+        name: 'List of User',
       });
     },
   },

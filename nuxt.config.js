@@ -1,6 +1,9 @@
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
   ssr: false,
+  server: {
+    host: '0',
+  },
   head: {
     title: 'Political Dashboard',
     meta: [
@@ -38,6 +41,7 @@ export default {
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
     { src: '~/plugins/vue-tags-input', ssr: false },
+    { src: '~/plugins/chart.js', mode: 'client' },
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -66,7 +70,6 @@ export default {
   ],
   toast: {
     position: 'bottom-center',
-    duration: 1500,
     action: {
       text: 'close',
       onClick: (e, toastObject) => {
