@@ -1,13 +1,13 @@
 <template>
   <footer class="main-footer">
     <div class="footer-left">
-      Copyright &copy; 2021
+      Copyright &copy; 2022
       <div class="bullet"></div>
       Develop By
       <a
-        href="https://www.linkedin.com/in/ghany-abdillah-ersa-06156013a/"
+        href="https://shiftacademy.id/"
         target="blank"
-        >Ghany Abdillah Ersa</a
+        >Shift Academy</a
       >
     </div>
   </footer>

@@ -73,7 +73,7 @@ export default {
   methods: {
     async submit() {
       try {
-        const keyword = this.payload.keyword.map((item) => item.text).join('|');
+        const keyword = this.payload.keyword.map((item) => `"${item.text}"`).join(' ');
         const response = await this.requestPost({
           url: 'crawl/tweet',
           data: {

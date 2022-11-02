@@ -110,7 +110,7 @@ export default {
       )} - ${this.$moment(this.payload.until).format('DD/MM/YYYY')}`;
     },
     keywords() {
-      return this.payload.keyword.split('|').map((item) => ({ text: item }));
+      return this.payload.keyword.split('"').filter((item) => item && item !== ' ').map((item) => ({ text: item }));
     },
     chartData() {
       const labels = ['Positif', 'Negatif', 'Netral'];
