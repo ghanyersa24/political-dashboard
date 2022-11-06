@@ -22,6 +22,18 @@ export default {
         return err;
       }
     },
+    async requestPut({ url, data, notify = true }) {
+      try {
+        const request = await this.$axios.$put(url, data);
+        if (notify) {
+          this.$toast.show(request.msg);
+        }
+        return request;
+      } catch (err) {
+        this.$toast.show(err.response.data.msg);
+        return err;
+      }
+    },
     async requestGet({ url, params }) {
       try {
         const request = await this.$axios.$get(url, { params });

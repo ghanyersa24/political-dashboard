@@ -62,6 +62,8 @@ export default {
     '@nuxtjs/axios',
     '@nuxtjs/moment',
     '@nuxtjs/toast',
+    'bootstrap-vue/nuxt',
+    'vue-sweetalert2/nuxt',
   ],
   toast: {
     position: 'bottom-center',

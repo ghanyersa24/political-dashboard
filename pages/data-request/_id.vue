@@ -8,7 +8,9 @@
           @click="$router.push('/')"
         ></i>
         Request Data Sentiment
-        <span :class="`ml-5 badge ${progressClass}`">Progress : {{ progress }} %</span>
+        <span :class="`ml-5 badge ${progressClass}`"
+          >Progress : {{ progress }} %</span
+        >
       </h5>
       <hr />
       <div class="container">
@@ -57,10 +59,28 @@
           <hr />
           <div class="table-responsive">
             <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Sentimen</th>
+                  <th>Content</th>
+                </tr>
+              </thead>
               <tbody>
-                <tr v-for="(item, i) in sentimens" :key="i">
-                  <td width="10%" class="p-0 pl-2">
-                    {{ item.mark }}
+                <tr v-for="(item, i) in tweets" :key="i">
+                  <td>{{item.id}}</td>
+                  <td width="15%" class="p-0 pl-2">
+                     <b-form inline>
+                    <b-badge class="mr-3" pill :variant="variantSentimen(item.mark)">
+                      {{itemSentimen(item.mark)}}
+                      </b-badge>
+                    <b-form-select  inline @change="(val)=>changeSentimen(item,val,i)"
+                      :value="item.mark" :options="[
+                      { value: 'positif', text: 'Positif' },
+                      { value: 'negatif', text: 'Negatif' },
+                      { value: 'netral', text: 'Netral' },
+                    ]"/>
+                     </b-form>
                   </td>
                   <td>
                     <a
@@ -75,6 +95,16 @@
                 </tr>
               </tbody>
             </table>
+            <div class="mt-3 d-flex justify-content-end">
+              <b-pagination
+                v-model="currentPage"
+                :total-rows="rows"
+                :per-page="perPage"
+                aria-controls="my-table"
+                first-number
+                last-number
+              />
+            </div>
           </div>
         </AtomsCardLayout>
       </div>
@@ -118,6 +148,11 @@ export default {
       if (this.progress > 80) return 'badge-primary';
       if (this.progress > 50) return 'badge-warning';
       return 'badge-danger';
+    },
+  },
+  watch: {
+    currentPage(val) {
+      this.getDataProcessed(val);
     },
   },
   data() {
@@ -185,17 +220,30 @@ export default {
           },
         },
       },
-      sentimens: [],
+      tweets: [],
       progress: 0,
+      perPage: 10,
+      currentPage: 1,
+      rows: 0,
     };
   },
   created() {
     this.getNetworkAnalysis();
     this.getQueue();
     this.getDoughnutChart();
-    // this.getDataProcessed();
+    this.getDataProcessed();
   },
   methods: {
+    variantSentimen(sentimen) {
+      if (sentimen === 'positif') return 'success';
+      if (sentimen === 'negatif') return 'danger';
+      return 'light';
+    },
+    itemSentimen(sentimen) {
+      if (sentimen === 'positif') return '+';
+      if (sentimen === 'negatif') return '-';
+      return '#';
+    },
     getQueue() {
       this.requestGet({
         url: 'twitter/get-queue',
@@ -216,11 +264,12 @@ export default {
         },
       );
     },
-    getDataProcessed() {
-      this.requestGet({ url: 'twitter/get-queue/9/processed' }).then(
+    getDataProcessed(page = 1) {
+      this.requestGet({ url: 'twitter/get-queue/9/processed', params: { page } }).then(
         (response) => {
-          this.sentimens = response.processed;
-          this.progress = response.progress;
+          this.tweets = response.data;
+          this.currentPage = response.current_page;
+          this.rows = response.total;
         },
       );
     },
@@ -237,6 +286,23 @@ export default {
         this.doughnutChart.labels = labels;
         this.doughnutChart.datasets[0].data = data;
       });
+    },
+    async changeSentimen(item, val, index) {
+      const { isConfirmed } = await this.konfirm(`Mengubah sentimen ID : ${item.id} menjadi ${val}`).then();
+      if (isConfirmed) {
+        const response = await this.requestPut({ url: `twitter/update-sentimen/${item.id}`, data: { mark: val } });
+        if (response) {
+          this.$toast.show(response.message);
+          this.tweets[index].mark = val;
+          this.getDoughnutChart();
+        }
+      } else {
+        const { mark } = { ...this.tweets[index] };
+        this.tweets[index].mark = '';
+        setTimeout(() => {
+          this.tweets[index].mark = mark;
+        }, 10);
+      }
     },
   },
 };

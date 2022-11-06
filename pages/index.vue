@@ -62,7 +62,9 @@ export default {
       });
     },
     keyword(keywords) {
-      return keywords.split('|').join(', ');
+      return keywords.split('"')
+        .filter((item) => item && item !== ' ')
+        .join(', ');
     },
     dateRange(start, end) {
       return `${this.$moment(start).format('DD MMMM YYYY')} - ${this.$moment(
