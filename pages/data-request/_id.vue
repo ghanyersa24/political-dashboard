@@ -8,7 +8,7 @@
           @click="$router.push('/')"
         ></i>
         Request Data Sentiment
-        <span class="ml-5 badge badge-primary">progress : {{ progress }}</span>
+        <span :class="`ml-5 badge ${progressClass}`">Progress : {{ progress }} %</span>
       </h5>
       <hr />
       <div class="container">
@@ -33,9 +33,9 @@
           <div id="network">
             <network
               ref="network"
-              :nodes="nodes"
-              :edges="edges"
-              :options="options"
+              :nodes="network.nodes"
+              :edges="network.edges"
+              :options="network.options"
             >
             </network>
           </div>
@@ -43,11 +43,9 @@
       </div>
       <div class="col-md-4">
         <AtomsCardLayout class="h-100">
-          <pie-chart
-            :chart-options="{
-              responsive: true,
-            }"
-            :chart-data="chartData"
+          <doughnut-chart
+            :chart-options="doughnutChart.options"
+            :chart-data="doughnutChart"
           />
         </AtomsCardLayout>
       </div>
@@ -110,28 +108,16 @@ export default {
       )} - ${this.$moment(this.payload.until).format('DD/MM/YYYY')}`;
     },
     keywords() {
-      return this.payload.keyword.split('"').filter((item) => item && item !== ' ').map((item) => ({ text: item }));
+      return this.payload.keyword
+        .split('"')
+        .filter((item) => item && item !== ' ')
+        .map((item) => ({ text: item }));
     },
-    chartData() {
-      const labels = ['Positif', 'Negatif', 'Netral'];
-      let positif = 0;
-      let netral = 0;
-      let negatif = 0;
-
-      this.sentimens.forEach((item) => {
-        if (item.mark === 'positif') positif += 1;
-        if (item.mark === 'netral') netral += 1;
-        if (item.mark === 'negatif') negatif += 1;
-      });
-      return {
-        labels,
-        datasets: [
-          {
-            data: [positif, netral, negatif],
-            backgroundColor: ['#47c363', '#e3eaef', '#fc544b'],
-          },
-        ],
-      };
+    progressClass() {
+      if (this.progress === 100) return 'badge-success';
+      if (this.progress > 80) return 'badge-primary';
+      if (this.progress > 50) return 'badge-warning';
+      return 'badge-danger';
     },
   },
   data() {
@@ -143,11 +129,60 @@ export default {
         until: new Date(),
       },
       defaultWords: [],
-      nodes: [],
-      edges: [],
-      options: {
-        edges: {
-          color: 'lightgray',
+      network: {
+        nodes: [],
+        edges: [],
+        options: {
+          autoResize: false,
+          edges: {
+            width: 2,
+            color: 'lightgray',
+          },
+          nodes: {
+            shape: 'dot',
+            borderWidth: 0,
+            font: { color: '#34395e' },
+            color: {
+              border: '#6777ef',
+              background: '#6777ef',
+              highlight: {
+                border: '#34395e',
+                background: '#34395e',
+              },
+            },
+            shapeProperties: {
+              useBorderWithImage: true,
+            },
+          },
+          groups: {},
+        },
+      },
+      doughnutChart: {
+        labels: ['Netral', 'Positif', 'Negatif'],
+        datasets: [
+          {
+            data: [0, 0, 0],
+            backgroundColor: ['#e3eaef', '#47c363', '#fc544b'],
+          },
+        ],
+        options: {
+          responsive: true,
+          plugins: {
+            datalabels: {
+              display: true,
+              align: 'bottom',
+              backgroundColor: '#fff',
+              borderRadius: 3,
+              font: {
+                size: 16,
+              },
+              formatter(value, context) {
+                const { data } = context.chart.data.datasets[0];
+                const sum = data.reduce((total, num) => total + num, 0);
+                return `${(value / sum) * 100} %`;
+              },
+            },
+          },
         },
       },
       sentimens: [],
@@ -157,21 +192,27 @@ export default {
   created() {
     this.getNetworkAnalysis();
     this.getQueue();
-    this.getDataProcessed();
+    this.getDoughnutChart();
+    // this.getDataProcessed();
   },
   methods: {
-    async getQueue() {
-      const response = await this.requestGet({
+    getQueue() {
+      this.requestGet({
         url: 'twitter/get-queue',
         name: 'queue twitter',
+      }).then((response) => {
+        const queue = response.find(
+          (item) => item.id === Number(this.$route.params.id),
+        );
+        this.payload = queue;
+        this.progress = (queue.processed / queue.counted_data) * 100;
       });
-      this.payload = response[response.length - 1];
     },
     getNetworkAnalysis() {
       this.requestGet({ url: 'twitter/analytic-network/9' }).then(
         (response) => {
-          this.nodes = response.nodes;
-          this.edges = response.edges;
+          this.network.nodes = response.nodes;
+          this.network.edges = response.edges;
         },
       );
     },
@@ -183,13 +224,27 @@ export default {
         },
       );
     },
+    getDoughnutChart() {
+      this.requestGet({
+        url: `twitter/bar-chart/${this.$route.params.id}`,
+      }).then((response) => {
+        const labels = [];
+        const data = [];
+        response.forEach((item) => {
+          labels.push(item.mark.toUpperCase());
+          data.push(item.total);
+        });
+        this.doughnutChart.labels = labels;
+        this.doughnutChart.datasets[0].data = data;
+      });
+    },
   },
 };
 </script>
 <style scoped>
 #network div {
   height: 600px;
-  background-color: var(--light);
+  border-radius: 15px;
 }
 .table td {
   padding-top: 0.54rem !important;

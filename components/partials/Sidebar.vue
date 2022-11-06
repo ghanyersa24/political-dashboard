@@ -2,10 +2,10 @@
   <div class="main-sidebar">
     <aside id="sidebar-wrapper">
       <div class="sidebar-brand">
-        <nuxt-link to="/">Fullstack Academy</nuxt-link>
+        <nuxt-link to="/">Data Analytics</nuxt-link>
       </div>
       <div class="sidebar-brand sidebar-brand-sm">
-        <nuxt-link to="/">FA</nuxt-link>
+        <nuxt-link to="/">DA</nuxt-link>
       </div>
       <ul class="sidebar-menu">
         <li v-for="(menu, i) in menus" :key="i">
@@ -24,6 +24,7 @@ export default {
   data() {
     return {
       menus: [
+        { icon: 'fab fa-dashcube', name: 'Dashboard', link: '/' },
         { icon: 'fab fa-dashcube', name: 'Dashboard', link: '/' },
       ],
     };

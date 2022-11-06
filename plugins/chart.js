@@ -1,5 +1,6 @@
 import Vue from 'vue';
-import { Line, Pie } from 'vue-chartjs/legacy';
+import { Line, Pie, Doughnut } from 'vue-chartjs/legacy';
+import ChartDataLabels from 'chartjs-plugin-datalabels';
 import {
   Chart as ChartJS,
   Title,
@@ -17,6 +18,7 @@ ChartJS.register(
   Title,
   Tooltip,
   Legend,
+  ChartDataLabels,
   PointElement,
   BarElement,
   CategoryScale,
@@ -30,4 +32,7 @@ Vue.component('line-chart', {
 });
 Vue.component('pie-chart', {
   extends: Pie,
+});
+Vue.component('doughnut-chart', {
+  extends: Doughnut,
 });

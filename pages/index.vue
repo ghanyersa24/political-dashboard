@@ -26,8 +26,8 @@
               <td class="font-weight-600">{{ keyword(item.keyword) }}</td>
               <td>{{ dateRange(item.since, item.until) }}</td>
               <td>
-                <div class="badge badge-warning text-capitalize">
-                  {{ item.status }}
+                <div :class="`badge ${progressClass(item)} text-capitalize`">
+                  {{ progres(item)===100?'Done':progres(item)+' %' }}
                 </div>
               </td>
               <td>
@@ -68,6 +68,17 @@ export default {
       return `${this.$moment(start).format('DD MMMM YYYY')} - ${this.$moment(
         end,
       ).format('DD MMMM YYYY')}`;
+    },
+    progres(item) {
+      const val = (item.processed / item.counted_data) * 100;
+      return val;
+    },
+    progressClass(item) {
+      const val = this.progres(item);
+      if (val === 100) return 'badge-success';
+      if (val > 80) return 'badge-primary';
+      if (val > 50) return 'badge-warning';
+      return 'badge-danger';
     },
   },
 };

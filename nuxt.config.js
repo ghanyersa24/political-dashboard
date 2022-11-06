@@ -20,16 +20,11 @@ export default {
       }],
     script: [
       { src: 'https://code.jquery.com/jquery-3.3.1.min.js' },
-      {
-        src: 'https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js',
-      },
-      {
-        src:
-          'https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js',
-      },
-      {
-        src: 'https://cdnjs.cloudflare.com/ajax/libs/jquery.nicescroll/3.7.6/jquery.nicescroll.min.js',
-      },
+      { src: 'https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js' },
+      { src: 'https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js' },
+      { src: 'https://cdnjs.cloudflare.com/ajax/libs/jquery.nicescroll/3.7.6/jquery.nicescroll.min.js' },
+      { src: 'https://cdn.jsdelivr.net/gh/emn178/chartjs-plugin-labels/src/chartjs-plugin-labels.js' },
+      { src: 'https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@0.1.0' },
       { src: '/assets/js/stisla.js' },
       { src: '/assets/js/scripts.js' },
     ],
