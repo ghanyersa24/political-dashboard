@@ -73,8 +73,8 @@ export default {
   methods: {
     async submit() {
       try {
-        const keyword = this.payload.keyword.map((item) => `"${item.text}"`).join(' ');
-        const response = await this.requestPost({
+        const keyword = this.payload.keyword.map((item) => `'${item.text}'`).join(' ');
+        this.requestPost({
           url: 'crawl/tweet',
           data: {
             name: this.payload.name,
@@ -83,7 +83,7 @@ export default {
             keyword,
           },
         });
-        this.$toast.show(response.message);
+        this.$toast.show('Your request has been received');
         this.$router.go(-1);
       } catch (error) {
         this.$toast.show(error.response.data.message);

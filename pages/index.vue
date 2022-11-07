@@ -31,7 +31,7 @@
                 </div>
               </td>
               <td>
-                <AtomsButton to="/data-request/9">Detail</AtomsButton>
+                <AtomsButton :to="`/data-request/${item.id}`">Detail</AtomsButton>
               </td>
             </tr>
           </tbody>
@@ -62,7 +62,7 @@ export default {
       });
     },
     keyword(keywords) {
-      return keywords.split('"')
+      return keywords.split("'")
         .filter((item) => item && item !== ' ')
         .join(', ');
     },

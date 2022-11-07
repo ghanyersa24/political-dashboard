@@ -139,7 +139,7 @@ export default {
     },
     keywords() {
       return this.payload.keyword
-        .split('"')
+        .split("'")
         .filter((item) => item && item !== ' ')
         .map((item) => ({ text: item }));
     },
@@ -257,7 +257,7 @@ export default {
       });
     },
     getNetworkAnalysis() {
-      this.requestGet({ url: 'twitter/analytic-network/9' }).then(
+      this.requestGet({ url: `twitter/analytic-network/${this.$route.params.id}` }).then(
         (response) => {
           this.network.nodes = response.nodes;
           this.network.edges = response.edges;
@@ -265,7 +265,7 @@ export default {
       );
     },
     getDataProcessed(page = 1) {
-      this.requestGet({ url: 'twitter/get-queue/9/processed', params: { page } }).then(
+      this.requestGet({ url: `twitter/get-queue/${this.$route.params.id}/processed`, params: { page } }).then(
         (response) => {
           this.tweets = response.data;
           this.currentPage = response.current_page;
