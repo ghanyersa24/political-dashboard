@@ -10,9 +10,9 @@
               @click="$router.push('/')"
             ></i>
             Request Data Sentiment
-            <span :class="`ml-5 badge ${progressClass}`"
-              >Progress : {{ progress }} %</span
-            >
+            <span v-if="false" :class="`ml-5 badge ${progressClass}`">
+              Progress : {{ progress }} %
+            </span>
           </h5>
           <br />
           <div class="container">
@@ -71,10 +71,10 @@
               <tbody>
                 <tr v-for="(item, i) in tweets" :key="i">
                   <td>{{ item.id }}</td>
-                  <td width="15%" class="p-0 pl-2">
+                  <td class="p-0 pl-2">
                     <b-form inline>
                       <b-badge
-                        class="mr-3"
+                        class="mr-3 text-dark"
                         pill
                         :variant="variantSentimen(item.mark)"
                       >
@@ -92,7 +92,7 @@
                       />
                     </b-form>
                   </td>
-                  <td>
+                  <td class="specifictd">
                     <a
                       class="text-decoration-none"
                       :href="item.url"
@@ -181,12 +181,12 @@ export default {
           autoResize: false,
           edges: {
             width: 2,
-            color: 'lightgray',
+            color: 'gray',
           },
           nodes: {
             shape: 'dot',
             borderWidth: 0,
-            font: { color: '#34395e' },
+            font: { color: 'white' },
             color: {
               border: 'gray',
               background: 'gray',
@@ -277,6 +277,15 @@ export default {
           });
           // const sortEdges = Object.entries(dataEdges).sort(([, a], [, b]) => b - a);
           const groups = {};
+          const edges = response.edges.map((item) => {
+            // eslint-disable-next-line no-nested-ternary
+            const color = item.mark === 'positif'
+              ? 'green'
+              : item.mark === 'negatif'
+                ? 'red'
+                : 'gray';
+            return { ...item, color };
+          });
           const nodes = response.nodes.map((item) => {
             const totalConnection = dataEdges[item.id];
             if (totalConnection && !groups[totalConnection]) {
@@ -292,7 +301,7 @@ export default {
             return { ...item, group: totalConnection };
           });
           this.network.nodes = nodes;
-          this.network.edges = response.edges;
+          this.network.edges = edges;
           this.network.options.groups = groups;
         },
       );
@@ -355,5 +364,18 @@ export default {
   padding-top: 0.54rem !important;
   padding-bottom: 0.54rem !important;
   border-bottom: 1px solid var(--secondary);
+}
+.specifictd {
+  width: 80%; /* adjust to desired wrapping */
+  white-space: normal; /* css-3 */
+  white-space: -moz-pre-wrap; /* Mozilla, since 1999 */
+  white-space: -pre-wrap; /* Opera 4-6 */
+  white-space: -o-pre-wrap; /* Opera 7 */
+  word-wrap: break-word; /* Internet Explorer 5.5+ */
+}
+</style>
+<style>
+.page-item.disabled .page-link {
+  background-color: unset !important;
 }
 </style>

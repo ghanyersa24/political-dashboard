@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-white">
+  <div class="bg-transparent">
     <div class="d-flex justify-content-center vh-100" v-if="loading">
       <div class="d-flex align-items-center">
         <div class="sk-grid">

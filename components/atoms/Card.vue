@@ -13,3 +13,9 @@ export default {
   name: 'card-atoms',
 };
 </script>
+<style scoped>
+.card-header{
+  display: flex;
+  justify-content: space-between;
+}
+</style>

@@ -69,3 +69,33 @@ export default {
   },
 };
 </script>
+<style>
+.reportrange-text {
+  background: unset !important;
+  padding-top: 12px !important;
+  border: 1px solid #2c2e33 !important;
+}
+.daterangepicker,
+.daterangepicker td,
+.daterangepicker th,
+.calendar-table,
+.drp-calendar {
+  background-color: black !important;
+}
+.daterangepicker .calendar-table .next span,
+.daterangepicker .calendar-table .prev span {
+  border: solid #fff !important;
+  border-width: 0 2px 2px 0 !important;
+}
+.daterangepicker .monthselect,
+.daterangepicker .yearselect {
+  background-color: black !important;
+  color: white !important;
+}
+.daterangepicker td.in-range {
+  background-color: rgba(252, 252, 252, 0.611) !important;
+}
+.daterangepicker td.off {
+  background-color: rgb(29, 27, 27) !important;
+}
+</style>

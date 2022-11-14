@@ -77,6 +77,7 @@ export default {
 </script>
 <style>
 .vue-tags-input {
+  background-color: unset !important;
   max-width: 100% !important;
 }
 .ti-input {
@@ -90,5 +91,21 @@ export default {
 }
 .vue-tags-input .ti-item.ti-selected-item {
   background: var(--primary) !important;
+}
+.ti-new-tag-input.ti-valid {
+  background-color: unset;
+}
+.ti-new-tag-input-wrapper input,.ti-tag-center {
+  color: white !important;
+  font-size: 14px !important;
+  font-weight: bold !important;
+}
+.ti-autocomplete {
+  background-color: black !important;
+  color: white !important;
+  border: none !important;
+}
+.ti-item.ti-valid {
+  padding: 10px !important;
 }
 </style>

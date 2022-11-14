@@ -1,14 +1,11 @@
 <template>
-  <footer class="main-footer">
-    <div class="footer-left">
-      Copyright &copy; 2022
-      <div class="bullet"></div>
-      Develop By
-      <a
-        href="https://shiftacademy.id/"
-        target="blank"
-        >Shift Academy</a
+  <footer class="footer">
+    <div class="d-sm-flex justify-content-center justify-content-sm-between">
+      <span
+        class="text-muted d-block text-center text-sm-left d-sm-inline-block"
       >
+        Copyright © Shift Academy 2022
+      </span>
     </div>
   </footer>
 </template>

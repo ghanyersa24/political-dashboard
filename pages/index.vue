@@ -27,11 +27,13 @@
               <td>{{ dateRange(item.since, item.until) }}</td>
               <td>
                 <div :class="`badge ${progressClass(item)} text-capitalize`">
-                  {{ progres(item)===100?'Done':progres(item)+' %' }}
+                  {{ item.status === 'done' ? 'Done' : 'In Progress' }}
                 </div>
               </td>
               <td>
-                <AtomsButton :to="`/data-request/${item.id}`">Detail</AtomsButton>
+                <AtomsButton :to="`/data-request/${item.id}`"
+                  >Detail</AtomsButton
+                >
               </td>
             </tr>
           </tbody>
@@ -62,7 +64,8 @@ export default {
       });
     },
     keyword(keywords) {
-      return keywords.split("'")
+      return keywords
+        .split("'")
         .filter((item) => item && item !== ' ')
         .join(', ');
     },
@@ -76,7 +79,7 @@ export default {
       return val;
     },
     progressClass(item) {
-      const val = this.progres(item);
+      const val = item.status === 'done' ? 100 : 80;
       if (val === 100) return 'badge-success';
       if (val > 80) return 'badge-primary';
       if (val > 50) return 'badge-warning';

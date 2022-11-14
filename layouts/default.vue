@@ -1,20 +1,13 @@
 <template>
-  <div id="app">
-    <div class="main-wrapper">
-      <partials-navbar />
-      <partials-sidebar />
-      <!-- Main Content -->
-      <div class="main-content">
-        <section class="section">
-          <div class="section-header">
-            <h1>:: Political Dashboard ::</h1>
-          </div>
-          <div class="section-body">
-            <nuxt />
-          </div>
-        </section>
+  <div class="container-scroller">
+    <partials-navbar />
+    <div class="container-fluid page-body-wrapper">
+      <div class="main-panel">
+        <div class="content-wrapper">
+          <nuxt />
+        </div>
+        <partials-footer />
       </div>
-      <partials-footer />
     </div>
   </div>
 </template>

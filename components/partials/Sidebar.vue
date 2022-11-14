@@ -1,22 +1,45 @@
 <template>
-  <div class="main-sidebar">
-    <aside id="sidebar-wrapper">
-      <div class="sidebar-brand">
-        <nuxt-link to="/">Data Analytics</nuxt-link>
-      </div>
-      <div class="sidebar-brand sidebar-brand-sm">
-        <nuxt-link to="/">DA</nuxt-link>
-      </div>
-      <ul class="sidebar-menu">
-        <li v-for="(menu, i) in menus" :key="i">
-          <nuxt-link :to="menu.link" class="nav-link">
-            <i :class="menu.icon" style="font-size: 1.2em"></i>
-            <span>{{ menu.name }}</span>
-          </nuxt-link>
-        </li>
-      </ul>
-    </aside>
-  </div>
+  <nav class="sidebar sidebar-offcanvas" id="sidebar">
+    <div
+      class="
+        sidebar-brand-wrapper
+        d-none d-lg-flex
+        align-items-center
+        justify-content-center
+        fixed-top
+      "
+    >
+      <nuxt-link to="/" class="text-white">Data Analytics</nuxt-link>
+      <nuxt-link to="/" class="sidebar-brand brand-logo-mini" href="index.html">
+        DA
+      </nuxt-link>
+    </div>
+    <ul class="nav">
+      <li class="nav-item menu-items">
+        <nuxt-link to="/" class="nav-link">
+          <span class="menu-icon">
+            <i class="mdi mdi-speedometer"></i>
+          </span>
+          <span class="menu-title">Dashboard</span>
+        </nuxt-link>
+      </li>
+      <li class="nav-item menu-items">
+        <nuxt-link
+          to="/users"
+          class="nav-link"
+          data-toggle="collapse"
+          aria-expanded="false"
+          aria-controls="auth"
+        >
+          <span class="menu-icon">
+            <i class="mdi mdi-security"></i>
+          </span>
+          <span class="menu-title">User Pages</span>
+          <i class="menu-arrow"></i>
+        </nuxt-link>
+      </li>
+    </ul>
+  </nav>
 </template>
 <script>
 export default {

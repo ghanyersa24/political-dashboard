@@ -17,22 +17,26 @@ export default {
         rel: 'stylesheet',
         type: 'text/css',
         href: 'https://use.fontawesome.com/releases/v5.7.2/css/all.css',
+      },
+      {
+        rel: 'stylesheet',
+        type: 'text/css',
+        href: 'https://cdn.jsdelivr.net/npm/@mdi/font@6.9.96/css/materialdesignicons.min.css',
       }],
     script: [
-      { src: 'https://code.jquery.com/jquery-3.3.1.min.js' },
-      { src: 'https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js' },
+      { src: 'https://code.jquery.com/jquery-3.4.1.min.js' },
       { src: 'https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js' },
-      { src: 'https://cdnjs.cloudflare.com/ajax/libs/jquery.nicescroll/3.7.6/jquery.nicescroll.min.js' },
       { src: 'https://cdn.jsdelivr.net/gh/emn178/chartjs-plugin-labels/src/chartjs-plugin-labels.js' },
       { src: 'https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@0.1.0' },
-      { src: '/assets/js/stisla.js' },
-      { src: '/assets/js/scripts.js' },
+      { src: '/assets/js/off-canvas.js' },
+      { src: '/assets/js/hoverable-collapse.js' },
+      { src: '/assets/js/misc.js' },
     ],
 
   },
 
   // Global CSS: https://go.nuxtjs.dev/config-css
-  css: ['@/assets/css/style.css', '@/assets/css/components.css', '@/assets/css/custom.css', '@/assets/css/spinkit.css'],
+  css: ['@/assets/css/style.css', '@/assets/css/vendor.css', '@/assets/css/spinkit.css'],
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
     { src: '~/plugins/vue-tags-input', ssr: false },

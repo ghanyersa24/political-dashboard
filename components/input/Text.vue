@@ -55,3 +55,12 @@ export default {
   },
 };
 </script>
+<style scoped>
+.form-control:disabled {
+  background-color: unset;
+}
+.form-control:focus {
+  border: 1px solid white;
+  color: white;
+}
+</style>
