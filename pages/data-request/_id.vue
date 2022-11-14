@@ -2,35 +2,45 @@
 <template>
   <div>
     <AtomsCardLayout>
-      <h5>
-        <i
-          class="fas fa-arrow-left mr-3 pointer"
-          @click="$router.push('/')"
-        ></i>
-        Request Data Sentiment
-        <span :class="`ml-5 badge ${progressClass}`"
-          >Progress : {{ progress }} %</span
-        >
-      </h5>
-      <hr />
-      <div class="container">
-        <input-text
-          v-model="payload.name"
-          name="Name Request"
-          disabled
-          placeholder="Presiden RI #1"
-        />
-        <input-text
-          :value="daterange"
-          name="Date Range"
-          disabled
-          placeholder="Presiden RI #1"
-        />
-        <input-tags name="Keyword" v-model="keywords" disabled />
+      <div class="row">
+        <div class="col-md-9 border-right">
+          <h5>
+            <i
+              class="fas fa-arrow-left mr-3 pointer"
+              @click="$router.push('/')"
+            ></i>
+            Request Data Sentiment
+            <span :class="`ml-5 badge ${progressClass}`"
+              >Progress : {{ progress }} %</span
+            >
+          </h5>
+          <br />
+          <div class="container">
+            <input-text
+              v-model="payload.name"
+              name="Name Request"
+              disabled
+              placeholder="Presiden RI #1"
+            />
+            <input-text
+              :value="daterange"
+              name="Date Range"
+              disabled
+              placeholder="Presiden RI #1"
+            />
+            <input-tags name="Keyword" v-model="keywords" disabled />
+          </div>
+        </div>
+        <div class="col-md-3">
+          <doughnut-chart
+            :chart-options="doughnutChart.options"
+            :chart-data="doughnutChart"
+          />
+        </div>
       </div>
     </AtomsCardLayout>
     <div class="row">
-      <div class="col-md-8">
+      <div class="col-md-12">
         <AtomsCardLayout class="h-100">
           <div id="network">
             <network
@@ -41,14 +51,6 @@
             >
             </network>
           </div>
-        </AtomsCardLayout>
-      </div>
-      <div class="col-md-4">
-        <AtomsCardLayout class="h-100">
-          <doughnut-chart
-            :chart-options="doughnutChart.options"
-            :chart-data="doughnutChart"
-          />
         </AtomsCardLayout>
       </div>
     </div>
@@ -68,19 +70,27 @@
               </thead>
               <tbody>
                 <tr v-for="(item, i) in tweets" :key="i">
-                  <td>{{item.id}}</td>
+                  <td>{{ item.id }}</td>
                   <td width="15%" class="p-0 pl-2">
-                     <b-form inline>
-                    <b-badge class="mr-3" pill :variant="variantSentimen(item.mark)">
-                      {{itemSentimen(item.mark)}}
+                    <b-form inline>
+                      <b-badge
+                        class="mr-3"
+                        pill
+                        :variant="variantSentimen(item.mark)"
+                      >
+                        {{ itemSentimen(item.mark) }}
                       </b-badge>
-                    <b-form-select  inline @change="(val)=>changeSentimen(item,val,i)"
-                      :value="item.mark" :options="[
-                      { value: 'positif', text: 'Positif' },
-                      { value: 'negatif', text: 'Negatif' },
-                      { value: 'netral', text: 'Netral' },
-                    ]"/>
-                     </b-form>
+                      <b-form-select
+                        inline
+                        @change="(val) => changeSentimen(item, val, i)"
+                        :value="item.mark"
+                        :options="[
+                          { value: 'positif', text: 'Positif' },
+                          { value: 'negatif', text: 'Negatif' },
+                          { value: 'netral', text: 'Netral' },
+                        ]"
+                      />
+                    </b-form>
                   </td>
                   <td>
                     <a
@@ -178,13 +188,14 @@ export default {
             borderWidth: 0,
             font: { color: '#34395e' },
             color: {
-              border: '#6777ef',
-              background: '#6777ef',
+              border: 'gray',
+              background: 'gray',
               highlight: {
                 border: '#34395e',
                 background: '#34395e',
               },
             },
+            size: 10,
             shapeProperties: {
               useBorderWithImage: true,
             },
@@ -214,7 +225,7 @@ export default {
               formatter(value, context) {
                 const { data } = context.chart.data.datasets[0];
                 const sum = data.reduce((total, num) => total + num, 0);
-                return `${(value / sum) * 100} %`;
+                return `${((value / sum) * 100).toFixed(2)} %`;
               },
             },
           },
@@ -257,21 +268,44 @@ export default {
       });
     },
     getNetworkAnalysis() {
-      this.requestGet({ url: `twitter/analytic-network/${this.$route.params.id}` }).then(
+      this.requestGet({ url: 'twitter/analytic-network/1' }).then(
         (response) => {
-          this.network.nodes = response.nodes;
+          const dataEdges = {};
+          response.edges.forEach((item) => {
+            if (dataEdges[item.to]) dataEdges[item.to] += 1;
+            else dataEdges[item.to] = 1;
+          });
+          // const sortEdges = Object.entries(dataEdges).sort(([, a], [, b]) => b - a);
+          const groups = {};
+          const nodes = response.nodes.map((item) => {
+            const totalConnection = dataEdges[item.id];
+            if (totalConnection && !groups[totalConnection]) {
+              groups[totalConnection] = {
+                size: 25 + totalConnection,
+                color: {
+                  background: `#${Math.floor(Math.random() * 16777215).toString(
+                    16,
+                  )}`,
+                },
+              };
+            }
+            return { ...item, group: totalConnection };
+          });
+          this.network.nodes = nodes;
           this.network.edges = response.edges;
+          this.network.options.groups = groups;
         },
       );
     },
     getDataProcessed(page = 1) {
-      this.requestGet({ url: `twitter/get-queue/${this.$route.params.id}/processed`, params: { page } }).then(
-        (response) => {
-          this.tweets = response.data;
-          this.currentPage = response.current_page;
-          this.rows = response.total;
-        },
-      );
+      this.requestGet({
+        url: `twitter/get-queue/${this.$route.params.id}/processed`,
+        params: { page },
+      }).then((response) => {
+        this.tweets = response.data;
+        this.currentPage = response.current_page;
+        this.rows = response.total;
+      });
     },
     getDoughnutChart() {
       this.requestGet({
@@ -288,9 +322,14 @@ export default {
       });
     },
     async changeSentimen(item, val, index) {
-      const { isConfirmed } = await this.konfirm(`Mengubah sentimen ID : ${item.id} menjadi ${val}`).then();
+      const { isConfirmed } = await this.konfirm(
+        `Mengubah sentimen ID : ${item.id} menjadi ${val}`,
+      ).then();
       if (isConfirmed) {
-        const response = await this.requestPut({ url: `twitter/update-sentimen/${item.id}`, data: { mark: val } });
+        const response = await this.requestPut({
+          url: `twitter/update-sentimen/${item.id}`,
+          data: { mark: val },
+        });
         if (response) {
           this.$toast.show(response.message);
           this.tweets[index].mark = val;
