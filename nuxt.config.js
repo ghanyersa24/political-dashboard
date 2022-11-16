@@ -3,6 +3,7 @@ export default {
   ssr: false,
   server: {
     host: '0',
+    port: 3100,
   },
   head: {
     title: 'Political Dashboard',
