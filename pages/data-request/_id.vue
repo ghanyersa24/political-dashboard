@@ -53,6 +53,19 @@
           </div>
         </AtomsCardLayout>
       </div>
+
+      <div class="col-md-12">
+        <AtomsCardLayout class="h-100">
+          <client-only>
+            <wordcloud
+              :data="defaultWords"
+              nameKey="name"
+              valueKey="value"
+            >
+            </wordcloud>
+          </client-only>
+        </AtomsCardLayout>
+      </div>
     </div>
     <div class="row mt-5">
       <div class="col-md-12">
@@ -118,17 +131,6 @@
           </div>
         </AtomsCardLayout>
       </div>
-      <client-only>
-        <wordcloud
-          v-if="false"
-          :data="defaultWords"
-          nameKey="name"
-          valueKey="value"
-          :showTooltip="true"
-          :wordClick="wordClickHandler"
-        >
-        </wordcloud>
-      </client-only>
     </div>
   </div>
 </template>
@@ -243,6 +245,7 @@ export default {
     this.getQueue();
     this.getDoughnutChart();
     this.getDataProcessed();
+    this.getWordcloud();
   },
   methods: {
     variantSentimen(sentimen) {
@@ -328,6 +331,17 @@ export default {
         });
         this.doughnutChart.labels = labels;
         this.doughnutChart.datasets[0].data = data;
+      });
+    },
+    getWordcloud() {
+      this.requestGet({
+        url: `twitter/wordcloud/${this.$route.params.id}`,
+      }).then((response) => {
+        const sortable = Object.entries(response).sort(([, a], [, b]) => b - a);
+
+        this.defaultWords = sortable
+          .slice(0, 1000)
+          .map((item) => ({ name: item[0], value: item[1] }));
       });
     },
     async changeSentimen(item, val, index) {
