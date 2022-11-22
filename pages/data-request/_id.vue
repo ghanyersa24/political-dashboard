@@ -271,7 +271,7 @@ export default {
       });
     },
     getNetworkAnalysis() {
-      this.requestGet({ url: 'twitter/analytic-network/1' }).then(
+      this.requestGet({ url: `twitter/analytic-network/${this.$route.params.id}` }).then(
         (response) => {
           const dataEdges = {};
           response.edges.forEach((item) => {
