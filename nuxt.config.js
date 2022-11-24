@@ -54,6 +54,9 @@ export default {
     // https://go.nuxtjs.dev/eslint
     '@nuxtjs/eslint-module',
   ],
+  moment: {
+    locales: ['id'],
+  },
 
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
