@@ -71,6 +71,7 @@ export default {
   ],
   toast: {
     position: 'bottom-center',
+    duration: 2500,
     action: {
       text: 'close',
       onClick: (e, toastObject) => {
