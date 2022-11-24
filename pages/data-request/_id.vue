@@ -32,116 +32,49 @@
           </div>
         </div>
         <div class="col-md-3">
-          <doughnut-chart
-            :chart-options="doughnutChart.options"
-            :chart-data="doughnutChart"
-          />
+          <doughnut-chart />
         </div>
       </div>
     </AtomsCardLayout>
     <div class="row">
-      <div class="col-md-12">
+      <div class="col-md-12 my-3">
         <AtomsCardLayout class="h-100">
-          <div id="network">
-            <network
-              ref="network"
-              :nodes="network.nodes"
-              :edges="network.edges"
-              :options="network.options"
-            >
-            </network>
-          </div>
+          <network-analytic />
         </AtomsCardLayout>
       </div>
 
-      <div class="col-md-12">
+      <div class="col-md-12 my-3">
         <AtomsCardLayout class="h-100">
-          <client-only>
-            <wordcloud
-              :data="defaultWords"
-              nameKey="name"
-              valueKey="value"
-            >
-            </wordcloud>
-          </client-only>
+          <word-cloud />
         </AtomsCardLayout>
       </div>
     </div>
-    <div class="row mt-5">
+    <div class="row my-3">
       <div class="col-md-12">
         <AtomsCardLayout>
           <h6 for="Tweet">Tweet</h6>
           <hr />
-          <div class="table-responsive">
-            <table class="table table-striped">
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>Sentimen</th>
-                  <th>Content</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="(item, i) in tweets" :key="i">
-                  <td>{{ item.id }}</td>
-                  <td class="p-0 pl-2">
-                    <b-form inline>
-                      <b-badge
-                        class="mr-3 text-dark"
-                        pill
-                        :variant="variantSentimen(item.mark)"
-                      >
-                        {{ itemSentimen(item.mark) }}
-                      </b-badge>
-                      <b-form-select
-                        inline
-                        @change="(val) => changeSentimen(item, val, i)"
-                        :value="item.mark"
-                        :options="[
-                          { value: 'positif', text: 'Positif' },
-                          { value: 'negatif', text: 'Negatif' },
-                          { value: 'netral', text: 'Netral' },
-                        ]"
-                      />
-                    </b-form>
-                  </td>
-                  <td class="specifictd">
-                    <a
-                      class="text-decoration-none"
-                      :href="item.url"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      {{ item.content }}
-                    </a>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-            <div class="mt-3 d-flex justify-content-end">
-              <b-pagination
-                v-model="currentPage"
-                :total-rows="rows"
-                :per-page="perPage"
-                aria-controls="my-table"
-                first-number
-                last-number
-              />
-            </div>
-          </div>
+          <tweet-sentiment />
         </AtomsCardLayout>
       </div>
     </div>
   </div>
 </template>
 <script>
-import wordcloud from 'vue-wordcloud';
-import { Network } from 'vue-vis-network';
 import requestVue from '~/mixins/request.vue';
+import DoughnutChart from '~/components/diagram/DoughnutChart.vue';
+import NetworkAnalytic from '~/components/diagram/NetworkAnalytic.vue';
+import WordCloud from '~/components/diagram/WordCloud.vue';
+import TweetSentiment from '~/components/diagram/TweetSentiment.vue';
 
 export default {
   name: 'add-data-request-page',
-  components: { wordcloud, Network },
+  components: {
+    DoughnutChart,
+    NetworkAnalytic,
+    WordCloud,
+    TweetSentiment,
+  },
   mixins: [requestVue],
   computed: {
     daterange() {
@@ -162,11 +95,6 @@ export default {
       return 'badge-danger';
     },
   },
-  watch: {
-    currentPage(val) {
-      this.getDataProcessed(val);
-    },
-  },
   data() {
     return {
       payload: {
@@ -175,89 +103,13 @@ export default {
         since: new Date(),
         until: new Date(),
       },
-      defaultWords: [],
-      network: {
-        nodes: [],
-        edges: [],
-        options: {
-          autoResize: false,
-          edges: {
-            width: 2,
-            color: 'gray',
-          },
-          nodes: {
-            shape: 'dot',
-            borderWidth: 0,
-            font: { color: 'white' },
-            color: {
-              border: 'gray',
-              background: 'gray',
-              highlight: {
-                border: '#34395e',
-                background: '#34395e',
-              },
-            },
-            size: 10,
-            shapeProperties: {
-              useBorderWithImage: true,
-            },
-          },
-          groups: {},
-        },
-      },
-      doughnutChart: {
-        labels: ['Netral', 'Positif', 'Negatif'],
-        datasets: [
-          {
-            data: [0, 0, 0],
-            backgroundColor: ['#e3eaef', '#47c363', '#fc544b'],
-          },
-        ],
-        options: {
-          responsive: true,
-          plugins: {
-            datalabels: {
-              display: true,
-              align: 'bottom',
-              backgroundColor: '#fff',
-              borderRadius: 3,
-              font: {
-                size: 16,
-              },
-              formatter(value, context) {
-                const { data } = context.chart.data.datasets[0];
-                const sum = data.reduce((total, num) => total + num, 0);
-                return `${((value / sum) * 100).toFixed(2)} %`;
-              },
-            },
-          },
-        },
-      },
-      tweets: [],
       progress: 0,
-      perPage: 10,
-      currentPage: 1,
-      rows: 0,
     };
   },
   created() {
-    this.getNetworkAnalysis();
     this.getQueue();
-    this.getDoughnutChart();
-    this.getDataProcessed();
-    this.getWordcloud();
   },
   methods: {
-    variantSentimen(sentimen) {
-      if (sentimen === 'positif') return 'success';
-      if (sentimen === 'negatif') return 'danger';
-      return 'light';
-    },
-    itemSentimen(sentimen) {
-      if (sentimen === 'positif') return '+';
-      if (sentimen === 'negatif') return '-';
-      return '#';
-    },
     getQueue() {
       this.requestGet({
         url: 'twitter/get-queue',
@@ -270,124 +122,9 @@ export default {
         this.progress = (queue.processed / queue.counted_data) * 100;
       });
     },
-    getNetworkAnalysis() {
-      this.requestGet({ url: `twitter/analytic-network/${this.$route.params.id}` }).then(
-        (response) => {
-          const dataEdges = {};
-          response.edges.forEach((item) => {
-            if (dataEdges[item.to]) dataEdges[item.to] += 1;
-            else dataEdges[item.to] = 1;
-          });
-          // const sortEdges = Object.entries(dataEdges).sort(([, a], [, b]) => b - a);
-          const groups = {};
-          const edges = response.edges.map((item) => {
-            // eslint-disable-next-line no-nested-ternary
-            const color = item.mark === 'positif'
-              ? 'green'
-              : item.mark === 'negatif'
-                ? 'red'
-                : 'gray';
-            return { ...item, color };
-          });
-          const nodes = response.nodes.map((item) => {
-            const totalConnection = dataEdges[item.id];
-            if (totalConnection && !groups[totalConnection]) {
-              groups[totalConnection] = {
-                size: 25 + totalConnection,
-                color: {
-                  background: `#${Math.floor(Math.random() * 16777215).toString(
-                    16,
-                  )}`,
-                },
-              };
-            }
-            return { ...item, group: totalConnection };
-          });
-          this.network.nodes = nodes;
-          this.network.edges = edges;
-          this.network.options.groups = groups;
-        },
-      );
-    },
-    getDataProcessed(page = 1) {
-      this.requestGet({
-        url: `twitter/get-queue/${this.$route.params.id}/processed`,
-        params: { page },
-      }).then((response) => {
-        this.tweets = response.data;
-        this.currentPage = response.current_page;
-        this.rows = response.total;
-      });
-    },
-    getDoughnutChart() {
-      this.requestGet({
-        url: `twitter/bar-chart/${this.$route.params.id}`,
-      }).then((response) => {
-        const labels = [];
-        const data = [];
-        response.forEach((item) => {
-          labels.push(item.mark.toUpperCase());
-          data.push(item.total);
-        });
-        this.doughnutChart.labels = labels;
-        this.doughnutChart.datasets[0].data = data;
-      });
-    },
-    getWordcloud() {
-      this.requestGet({
-        url: `twitter/wordcloud/${this.$route.params.id}`,
-      }).then((response) => {
-        const sortable = Object.entries(response).sort(([, a], [, b]) => b - a);
-
-        this.defaultWords = sortable
-          .slice(0, 1000)
-          .map((item) => ({ name: item[0], value: item[1] }));
-      });
-    },
-    async changeSentimen(item, val, index) {
-      const { isConfirmed } = await this.konfirm(
-        `Mengubah sentimen ID : ${item.id} menjadi ${val}`,
-      ).then();
-      if (isConfirmed) {
-        const response = await this.requestPut({
-          url: `twitter/update-sentimen/${item.id}`,
-          data: { mark: val },
-        });
-        if (response) {
-          this.$toast.show(response.message);
-          this.tweets[index].mark = val;
-          this.getDoughnutChart();
-        }
-      } else {
-        const { mark } = { ...this.tweets[index] };
-        this.tweets[index].mark = '';
-        setTimeout(() => {
-          this.tweets[index].mark = mark;
-        }, 10);
-      }
-    },
   },
 };
 </script>
-<style scoped>
-#network div {
-  height: 600px;
-  border-radius: 15px;
-}
-.table td {
-  padding-top: 0.54rem !important;
-  padding-bottom: 0.54rem !important;
-  border-bottom: 1px solid var(--secondary);
-}
-.specifictd {
-  width: 80%; /* adjust to desired wrapping */
-  white-space: normal; /* css-3 */
-  white-space: -moz-pre-wrap; /* Mozilla, since 1999 */
-  white-space: -pre-wrap; /* Opera 4-6 */
-  white-space: -o-pre-wrap; /* Opera 7 */
-  word-wrap: break-word; /* Internet Explorer 5.5+ */
-}
-</style>
 <style>
 .page-item.disabled .page-link {
   background-color: unset !important;

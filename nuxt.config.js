@@ -55,6 +55,9 @@ export default {
     // https://go.nuxtjs.dev/eslint
     '@nuxtjs/eslint-module',
   ],
+  moment: {
+    locales: ['id'],
+  },
 
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
@@ -72,6 +75,7 @@ export default {
   ],
   toast: {
     position: 'bottom-center',
+    duration: 2500,
     action: {
       text: 'close',
       onClick: (e, toastObject) => {

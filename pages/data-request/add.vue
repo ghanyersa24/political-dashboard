@@ -1,4 +1,3 @@
-<!-- eslint-disable vue/no-deprecated-v-on-native-modifier -->
 <template>
   <AtomsCardLayout>
     <h5>
@@ -73,18 +72,37 @@ export default {
   methods: {
     async submit() {
       try {
-        const keyword = this.payload.keyword.map((item) => `'${item.text}'`).join(' ');
-        this.requestPost({
-          url: 'crawl/tweet',
+        const keyword = this.payload.keyword
+          .map((item) => `'${item.text}'`)
+          .join(' ');
+        const since = this.$moment(this.payload.since);
+        const until = this.$moment(this.payload.until);
+        const { success, data } = await this.requestPost({
+          url: 'crawl/parents',
           data: {
             name: this.payload.name,
-            since: this.$moment(this.payload.since).format('Y-MM-DD'),
-            until: this.$moment(this.payload.until).format('Y-MM-DD'),
+            since: since.format('Y-MM-DD'),
+            until: until.format('Y-MM-DD'),
             keyword,
           },
         });
-        this.$toast.show('Your request has been received');
-        this.$router.go(-1);
+        if (success) {
+          const parentId = data.id;
+          const runDate = since;
+          const limit = until.add(1, 'days');
+          while (runDate.diff(limit) < 0) {
+            this.requestPost({
+              url: 'crawl/childs',
+              data: {
+                parent_id: parentId,
+                since: runDate.format('Y-MM-DD'),
+                until: runDate.add(1, 'days').format('Y-MM-DD'),
+              },
+            });
+          }
+          this.$toast.show('Your request has been received');
+          this.$router.go(-1);
+        }
       } catch (error) {
         this.$toast.show(error.response.data.message);
       }
