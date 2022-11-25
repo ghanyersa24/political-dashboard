@@ -3,7 +3,7 @@
     <div class="navbar-menu-wrapper flex-grow d-flex align-items-stretch">
       <ul class="navbar-nav w-100 ml-3">
         <li class="nav-item w-100">
-          <h2>Political Dashboard</h2>
+          <h2>Sentiment Dashboard</h2>
         </li>
       </ul>
       <ul class="navbar-nav navbar-nav-right">
