@@ -3,6 +3,7 @@ export default {
   ssr: false,
   server: {
     host: '0',
+
   },
   head: {
     title: 'Sentiment Dashboard',
