@@ -6,7 +6,8 @@
     <div class="col-md-9">
       <client-only>
         <vue-tags-input
-          :readonly="disabled"
+          :readonly="!!disabled"
+          :disabled="!!disabled"
           class="form-control"
           v-model="tag"
           :tags="data"
@@ -95,7 +96,8 @@ export default {
 .ti-new-tag-input.ti-valid {
   background-color: unset;
 }
-.ti-new-tag-input-wrapper input,.ti-tag-center {
+.ti-new-tag-input-wrapper input,
+.ti-tag-center {
   color: white !important;
   font-size: 14px !important;
   font-weight: bold !important;
@@ -107,5 +109,8 @@ export default {
 }
 .ti-item.ti-valid {
   padding: 10px !important;
+}
+.ti-disabled .ti-icon-close {
+  display: none;
 }
 </style>

@@ -4,7 +4,7 @@
       <thead>
         <tr>
           <th :style="{ width: '170px' }">
-            <div>Sentimen</div>
+            <div>Sentiment</div>
             <b-form-select
               inline
               v-model="cat"
@@ -16,36 +16,41 @@
               ]"
             />
           </th>
-          <th v-if="!hideUsername">
-            <div>Username</div>
-            <b-form-input
+          <th :style="{ width: '170px' }">
+            <div>News Portal</div>
+            <b-form-select
               inline
-              @change="setUsername"
-              placeholder="Enter Username"
-            >
-            </b-form-input>
+              v-model="portal"
+              :options="[
+                { value: '', text: 'All' },
+                { value: 'positif', text: 'Positif' },
+                { value: 'negatif', text: 'Negatif' },
+                { value: 'netral', text: 'Netral' },
+              ]"
+            />
           </th>
           <th class="specifictd">
-            <div>Content</div>
+            <div>Title</div>
             <b-form-input
               inline
-              @change="setContent"
-              placeholder="Enter Content"
+              @change="(val) => (content = val)"
+              placeholder="Enter Title"
             >
             </b-form-input>
           </th>
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(item, i) in tweets" :key="i">
+        <tr v-for="(item, i) in listNews" :key="i">
           <td class="p-0 pl-2">
             <form-badge-sentimen
               :item="item"
               :index="i"
               @update="updateDataTweets"
+              :type="'news'"
             />
           </td>
-          <td v-if="!hideUsername">{{ item.username }}</td>
+          <td>{{ item.portal_account }}</td>
           <td class="specifictd">
             <a
               class="text-decoration-none"
@@ -53,7 +58,7 @@
               target="_blank"
               rel="noopener noreferrer"
             >
-              {{ item.content }}
+              {{ item.title }}
             </a>
           </td>
         </tr>
@@ -73,7 +78,7 @@
 </template>
 <script>
 import requestVue from '~/mixins/request.vue';
-import FormBadgeSentimen from '../molecules/FormBadgeSentimen.vue';
+import FormBadgeSentimen from '~/components/molecules/FormBadgeSentimen.vue';
 
 export default {
   components: { FormBadgeSentimen },
@@ -89,7 +94,7 @@ export default {
     cat() {
       this.getDataProcessed();
     },
-    username() {
+    portal() {
       this.getDataProcessed();
     },
     content() {
@@ -98,13 +103,13 @@ export default {
   },
   data() {
     return {
-      tweets: [],
+      listNews: [],
       perPage: 10,
       currentPage: 1,
       rows: 0,
       cat: '',
       content: '',
-      username: '',
+      portal: '',
     };
   },
   created() {
@@ -112,39 +117,25 @@ export default {
   },
   methods: {
     getDataProcessed(page = 1) {
-      const {
-        cat, content, username, userId,
-      } = this;
+      const { cat, content, portal } = this;
       const params = { page };
       if (cat) params.cat = cat;
       if (content) params.content = content;
-      if (username) params.username = username;
-      if (userId) params.user_id = userId;
+      if (portal) params.portal = portal;
+
       this.requestGet({
-        url: `twitter/get-queue/${this.$route.params.id}/processed`,
+        url: 'berita/get-detail-berita/19',
         params,
       }).then((response) => {
-        this.tweets = response.data;
+        this.listNews = response.data;
         this.currentPage = response.current_page;
         this.rows = response.total;
-        this.$emit('username', response.data?.[0]?.username);
       });
     },
     updateDataTweets(item) {
-      const tweets = [...this.tweets];
-      tweets[item.index] = item;
-      this.tweets = tweets;
-
-      // this.tweets = [];
-      // setTimeout(() => {
-      //   this.tweets = tweets;
-      // }, 1);
-    },
-    setUsername(val) {
-      this.username = val;
-    },
-    setContent(val) {
-      this.content = val;
+      const listNews = [...this.listNews];
+      listNews[item.index] = item;
+      this.listNews = listNews;
     },
   },
 };

@@ -3,7 +3,6 @@ export default {
   ssr: false,
   server: {
     host: '0',
-
   },
   head: {
     title: 'Sentiment Dashboard',
@@ -23,6 +22,11 @@ export default {
         rel: 'stylesheet',
         type: 'text/css',
         href: 'https://cdn.jsdelivr.net/npm/@mdi/font@6.9.96/css/materialdesignicons.min.css',
+      },
+      {
+        rel: 'stylesheet',
+        type: 'text/css',
+        href: 'https://unpkg.com/leaflet@1.9.3/dist/leaflet.css',
       }],
     script: [
       { src: 'https://code.jquery.com/jquery-3.4.1.min.js' },
@@ -42,6 +46,7 @@ export default {
   plugins: [
     { src: '~/plugins/vue-tags-input', ssr: false },
     { src: '~/plugins/chart.js', mode: 'client' },
+    { src: '~/plugins/leaflet.js', ssr: false },
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components

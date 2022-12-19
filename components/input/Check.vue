@@ -20,14 +20,14 @@
         </div>
       </div>
     </div>
-    <div v-else class="checkbox">
+    <div v-else class="checkbox mb-2">
       <input
         :disabled="disabled"
         type="checkbox"
         :id="idName"
         v-model="value"
       />
-      <label :for="idName">
+      <label :for="idName" class="pl-5">
         <span class="text-capitalize">
           {{ value ? null : '' }}{{ label }}
         </span>
@@ -137,8 +137,8 @@ export default {
 }
 
 .checkbox input[type='checkbox']:checked ~ label:before {
-  border: 2px solid #2cb96a;
-  background-color: #2cb96a;
+  border: 2px solid var(--primary);
+  background-color: var(--primary);
 }
 
 .checkbox input[type='checkbox']:checked ~ label:after {

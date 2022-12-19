@@ -23,6 +23,10 @@ export default {
   props: {
     item: Object,
     index: Number,
+    type: {
+      type: String,
+      default: 'twitter',
+    },
   },
   computed: {
     sentimen() {
@@ -41,18 +45,21 @@ export default {
   },
   methods: {
     async changeSentimen(val) {
-      const { item } = this;
+      const { item, type } = this;
+      const sentimentName = type === 'twitter' ? item.username : item.title;
+      const sentimentUrl = type === 'twitter'
+        ? 'twitter/update-sentimen/'
+        : 'berita/update-sentimen/';
       const { isConfirmed } = await this.konfirm(
-        `Mengubah sentimen ${item.username} menjadi ${val}`,
+        `Mengubah sentimen ${sentimentName} menjadi ${val}`,
       ).then();
       if (isConfirmed) {
         const response = await this.requestPut({
-          url: `twitter/update-sentimen/${item.id}`,
+          url: `${sentimentUrl + item.id}`,
           data: { mark: val },
         });
         if (response) {
           this.$toast.show(response.message);
-          // this.getDoughnutChart();
           item.mark = val;
         }
       }
