@@ -58,7 +58,7 @@ export default {
     getMarks() {
       // center: [-0.126686, -234.819374]
       this.requestGet({
-        url: 'https://api.npoint.io/26a0a0d19fdf66ae6238',
+        url: 'https://api.npoint.io/63dc5e0817e62dd9e386',
       }).then((res) => {
         this.markers = res;
       });
