@@ -10,6 +10,9 @@ export default {
   mixins: [requestVue],
   components: { AtomsDoughnutChart },
   computed: {
+    checkeds() {
+      return this.$store.state.NewsPortal.checkeds;
+    },
     datasets() {
       const data = [
         { mark: 'positif', total: 0 },
@@ -17,14 +20,15 @@ export default {
         { mark: 'netral', total: 0 },
       ];
       for (const key in this.allData) {
-        if (Object.hasOwnProperty.call(this.allData, key)) {
-          const dataPerPortal = this.allData[key];
-          dataPerPortal.forEach((item) => {
-            if (item.mark === 'positif') data[0].total += item.total;
-            if (item.mark === 'negatif') data[1].total += item.total;
-            if (item.mark === 'netral') data[2].total += item.total;
-          });
-        }
+        if (this.checkeds.includes(key))
+          if (Object.hasOwnProperty.call(this.allData, key)) {
+            const dataPerPortal = this.allData[key];
+            dataPerPortal.forEach((item) => {
+              if (item.mark === 'positif') data[0].total += item.total;
+              if (item.mark === 'negatif') data[1].total += item.total;
+              if (item.mark === 'netral') data[2].total += item.total;
+            });
+          }
       }
       return data;
     },
@@ -43,6 +47,7 @@ export default {
         url: 'berita/bar-chart/19',
       }).then((response) => {
         this.allData = response;
+        this.$store.commit('NewsPortal/barchart', response);
       });
     },
   },

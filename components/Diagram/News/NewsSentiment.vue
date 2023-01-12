@@ -18,16 +18,7 @@
           </th>
           <th :style="{ width: '170px' }">
             <div>News Portal</div>
-            <b-form-select
-              inline
-              v-model="portal"
-              :options="[
-                { value: '', text: 'All' },
-                { value: 'positif', text: 'Positif' },
-                { value: 'negatif', text: 'Negatif' },
-                { value: 'netral', text: 'Netral' },
-              ]"
-            />
+            <b-form-select inline v-model="portal" :options="list" />
           </th>
           <th class="specifictd">
             <div>Title</div>
@@ -86,6 +77,18 @@ export default {
   props: {
     userId: String,
     hideUsername: Boolean,
+  },
+  computed: {
+    checkeds() {
+      return this.$store.state.NewsPortal.checkeds;
+    },
+    list() {
+      const list = this.$store.state.NewsPortal.list.map((item) => ({
+        text: item,
+        value: item,
+      }));
+      return [...list, { text: 'All', value: '' }];
+    },
   },
   watch: {
     currentPage(val) {

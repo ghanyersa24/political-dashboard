@@ -1,15 +1,22 @@
 <template>
-  <l-map :zoom="zoom" :center="center">
-    <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
-    <l-marker
-      v-for="(item, i) in markers"
-      :key="i"
-      :lat-lng="[item.lat, item.long]"
-      :icon="getIcon(item.sentimen)"
-    >
-      <l-tooltip>{{ item.name }}</l-tooltip>
-    </l-marker>
-  </l-map>
+  <div>
+    <div class="text-right">
+      <button class="btn btn-dark" @click="reload">
+        <i class="mdi mdi-reload"></i>
+      </button>
+    </div>
+    <l-map v-if="!isReload" :zoom="zoom" :center="center">
+      <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
+      <l-marker
+        v-for="(item, i) in markers"
+        :key="i"
+        :lat-lng="[item.lat, item.long]"
+        :icon="getIcon(item.sentimen)"
+      >
+        <l-tooltip>{{ item.name }}</l-tooltip>
+      </l-marker>
+    </l-map>
+  </div>
 </template>
 
 <script>
@@ -23,6 +30,7 @@ export default {
       url: 'https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png',
       attribution: '',
       zoom: 5,
+      isReload: false,
       markers: [],
       center: [-0.3162885, 121.8052727],
     };
@@ -61,7 +69,14 @@ export default {
         url: 'https://api.npoint.io/63dc5e0817e62dd9e386',
       }).then((res) => {
         this.markers = res;
+        this.reload();
       });
+    },
+    reload() {
+      this.isReload = true;
+      setTimeout(() => {
+        this.isReload = false;
+      }, 100);
     },
   },
 };

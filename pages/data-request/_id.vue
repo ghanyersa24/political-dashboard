@@ -3,7 +3,7 @@
   <div>
     <AtomsCardLayout>
       <div class="row">
-        <div class="col-md-9 border-right">
+        <div class="col-md-9">
           <h5>
             <i
               class="fas fa-arrow-left mr-3 pointer"
@@ -13,7 +13,6 @@
             <span v-if="false" :class="`ml-5 badge ${progressClass}`">
               Progress : {{ progress }} %
             </span>
-            {{ checkeds }}
           </h5>
           <br />
           <div class="container">
@@ -31,19 +30,6 @@
             />
             <input-tags name="Keyword" v-model="keywords" disabled />
           </div>
-        </div>
-        <div class="col-md-3">
-          <h5>News Portal</h5>
-          <hr />
-          <input-check
-            v-for="(item, i) in $store.state.NewsPortal.list"
-            :key="i"
-            :name="item"
-            :label="item"
-            check-only
-            @get="(val) => getCheck(item, val)"
-            val
-          />
         </div>
       </div>
     </AtomsCardLayout>
@@ -88,10 +74,42 @@
           <AtomsCardLayout class="h-100">
             <div class="row">
               <div class="col-md-4">
-                <news-doughnut-chart />
+                <h5>News Portal</h5>
+                <hr />
+                <input-check
+                  v-for="(item, i) in listNewsPortal"
+                  :key="i"
+                  :name="item"
+                  :label="item"
+                  check-only
+                  @get="(val) => getCheck(item, val)"
+                  val
+                />
               </div>
               <div class="col-md-8">
                 <news-word-cloud />
+              </div>
+            </div>
+          </AtomsCardLayout>
+        </div>
+        <div class="my-3">
+          <AtomsCardLayout class="h-100">
+            <div class="row">
+              <div class="col-md-5">
+                <h4 class="text-white text-center">Total</h4>
+                <news-doughnut-chart />
+              </div>
+              <div class="col-md-7">
+                <div class="row">
+                  <div
+                    v-for="(item, i) in listNewsPortal"
+                    class="col-md-6 mb-3"
+                    :key="i"
+                  >
+                    <h4 class="text-white text-center text-capitalize mb-0">{{ item }}</h4>
+                    <news-doughnut-chart />
+                  </div>
+                </div>
               </div>
             </div>
           </AtomsCardLayout>
@@ -151,11 +169,12 @@ export default {
       if (this.progress > 50) return 'badge-warning';
       return 'badge-danger';
     },
-  },
-  asyncData({ store }) {
-    return {
-      checkeds: store.state.NewsPortal.list,
-    };
+    checkeds() {
+      return this.$store.state.NewsPortal.checkeds;
+    },
+    listNewsPortal() {
+      return this.$store.state.NewsPortal.list;
+    },
   },
   data() {
     return {
@@ -191,9 +210,13 @@ export default {
       });
     },
     getCheck(item, isChecked) {
-      if (isChecked) this.checkeds.push(item);
-      else {
-        this.checkeds = this.checkeds.filter((check) => check !== item);
+      if (isChecked) {
+        this.$store.commit('NewsPortal/checkeds', [...this.checkeds, item]);
+      } else {
+        this.$store.commit(
+          'NewsPortal/checkeds',
+          this.checkeds.filter((check) => check !== item),
+        );
       }
     },
   },
