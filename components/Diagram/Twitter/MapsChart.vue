@@ -28,7 +28,7 @@ export default {
   data() {
     return {
       url: 'https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png',
-      attribution: '',
+      attribution: '© Stadia Maps',
       zoom: 5,
       isReload: false,
       markers: [],
