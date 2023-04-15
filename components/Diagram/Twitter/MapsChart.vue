@@ -27,7 +27,7 @@ export default {
   mixins: [requestVue],
   data() {
     return {
-      url: 'https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png',
+      url: 'https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png?access_token=0ec40ec4-fa9a-4a62-9c30-f5284006c32b',
       attribution: '© Stadia Maps',
       zoom: 5,
       isReload: false,
