@@ -94,7 +94,7 @@ export default {
     baseURL: 'https://service.shiftacademy.id/api',
   },
   router: {
-    middleware: ['auth'],
+    middleware: ['maintenance'],
   },
 
   // PWA module configuration: https://go.nuxtjs.dev/pwa
